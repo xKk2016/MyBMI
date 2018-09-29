@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">My BMI</string>
+    <string name="caculater">计算</string>
+    <string name="height">身高(m)</string>
+    <string name="weight">体重(kg)</string>
+    <string name="Zero">0</string>
+    <string name="dollar">DOLLAR</string>
+    <string name="euro">EURO</string>
+    <string name="won">WON</string>
+    <string name="count">请输入货币数量:</string>
+    <string name="init">0</string>
+    <string name="next">汇率换算</string>
+    <string name="exchange">汇率转换</string>
+    <string name="bmi">BMI</string>
+    <string name="config">config</string>
+    <string name="save">save</string>
+</resources>
