@@ -16,6 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +33,9 @@ import java.net.URL;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener,Runnable{
 
-    double dollar_rate = 6.8833;
-    double euro_rate = 8.016;
-    double won_rate = 0.006205;
+    private double dollar_rate =  0.14442050379784;
+    private double euro_rate =  0.1258155457983;
+    private double won_rate =  164.10384926188;
     Handler handler;
     Thread t;
 
@@ -54,7 +59,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             public void handleMessage(Message msg) {
                 if (msg.what==5){
                     String str = (String) msg.obj;
-                    Log.i("tag","handleMessage msg = "+str);
+                    Log.i("DollarRate","handleMessage msg = "+str);
                 }
                 super.handleMessage(msg);
             }
@@ -70,19 +75,21 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         };
         t1.start();
 
+
+
 //        SharedPreferences sharedPreferences = getSharedPreferences("myrate", Activity.MODE_PRIVATE);
-//        dollar_rate = sharedPreferences.getFloat("dollar_rate",6.8833f);
-//        euro_rate = sharedPreferences.getFloat("euro_rate",8.016f);
-//        won_rate = sharedPreferences.getFloat("won_rate",0.006205f);
+//        dollar_rate = sharedPreferences.getFloat("dollar_rate", (float) 0.14442050379784);
+//        euro_rate = sharedPreferences.getFloat("euro_rate", (float) 0.1258155457983);
+//        won_rate = sharedPreferences.getFloat("won_rate", (float) 164.10384926188);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Bundle bundle = data.getExtras();
         if(requestCode==1&&resultCode==2){
-            dollar_rate=bundle.getDouble("dollar_rate",6.8833);
-            euro_rate=bundle.getDouble("euro_rate",8.016);
-            won_rate=bundle.getDouble("won_rate",0.006205);
+            dollar_rate=bundle.getDouble("dollar_rate",0.14442050379784);
+            euro_rate=bundle.getDouble("euro_rate",0.1258155457983);
+            won_rate=bundle.getDouble("won_rate",164.10384926188);
         }
     }
 
@@ -125,13 +132,22 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             url = new URL("https://huobiduihuan.51240.com/");
             HttpURLConnection http  = (HttpURLConnection) url.openConnection();
             InputStream in = http.getInputStream();
-
             String html = inputStream2String(in);
-
             Log.i("tag","run:html"+html);
-
             Message msg = handler.obtainMessage(5);
-            msg.obj="Hello from run()";
+            Document doc = Jsoup.parse(html);
+            Element elementDollar = doc.getElementsByAttributeValueContaining("title","United States Dollars - 美元").first();
+            Element elementEuro = doc.getElementsByAttributeValueContaining("title","Euro - 欧元").first();
+            Element elementWon = doc.getElementsByAttributeValueContaining("title","South Korea Won - 韩元").first();
+
+            dollar_rate=Double.parseDouble(elementDollar.text());
+            euro_rate = Double.parseDouble(elementEuro.text());
+            won_rate = Double.parseDouble(elementWon.text());
+
+
+
+
+            msg.obj=elementDollar.text();
             handler.sendMessage(msg);
         }catch (MalformedURLException e){
             e.printStackTrace();

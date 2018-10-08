@@ -28,9 +28,9 @@ public class config extends AppCompatActivity {
 
 
 
-        dollar_edit.setText(String.valueOf(bundle.getDouble("dollar_rate",6.8833)));
-        euro_edit.setText(String.valueOf(bundle.getDouble("euro_rate",8.016)));
-        won_edit.setText(String.valueOf(bundle.getDouble("won_rate",0.006205)));
+        dollar_edit.setText(String.valueOf(bundle.getDouble("dollar_rate",0.14442050379784)));
+        euro_edit.setText(String.valueOf(bundle.getDouble("euro_rate",0.1258155457983)));
+        won_edit.setText(String.valueOf(bundle.getDouble("won_rate",164.10384926188)));
 
 
         save.setOnClickListener(new View.OnClickListener() {
