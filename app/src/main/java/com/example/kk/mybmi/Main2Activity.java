@@ -75,9 +75,9 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
         SharedPreferences sharedPreferencesDate = getSharedPreferences("myrate", Activity.MODE_PRIVATE);
         final SharedPreferences.Editor editorDate = sharedPreferencesDate.edit();
-        dollar_rate=sharedPreferencesDate.getFloat("dollar_rate",(float) 0.14442050379784);
-        euro_rate = sharedPreferencesDate.getFloat("euro_rate", (float) 0.1258155457983);
-        won_rate = sharedPreferencesDate.getFloat("won_rate", (float) 164.10384926188);
+        dollar_rate=sharedPreferencesDate.getFloat("dollar_rate",0.144420f);
+        euro_rate = sharedPreferencesDate.getFloat("euro_rate",0.125815f);
+        won_rate = sharedPreferencesDate.getFloat("won_rate",164.103849f);
 
         if (sharedPreferencesDate.getInt("year",1970)==calendar.get(Calendar.YEAR)&&
                 sharedPreferencesDate.getInt("month",0)==calendar.get(Calendar.MONTH)&&
@@ -109,15 +109,15 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Bundle bundle = data.getExtras();
         if(requestCode==1&&resultCode==2){
-            dollar_rate=bundle.getFloat("dollar_rate",(float)0.14442050379784);
-            euro_rate=bundle.getFloat("euro_rate",(float)0.1258155457983);
-            won_rate=bundle.getFloat("won_rate",(float)164.10384926188);
+            dollar_rate=bundle.getFloat("dollar_rate",0.144420f);
+            euro_rate=bundle.getFloat("euro_rate",0.125815f);
+            won_rate=bundle.getFloat("won_rate",164.103849f);
             Log.i("save","手动更新完成！");
         }
     }
 
-    public double exchange(double rate, double count){
-        return rate*count;
+    public float exchange(Float rate, double count){
+        return (float) (rate*count);
     }
 
     @Override
