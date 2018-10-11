@@ -30,12 +30,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Year;
+import java.util.Calendar;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener,Runnable{
 
-    private double dollar_rate =  0.14442050379784;
-    private double euro_rate =  0.1258155457983;
-    private double won_rate =  164.10384926188;
+    private float dollar_rate;
+    private float euro_rate;
+    private float won_rate;
     Handler handler;
     Thread t;
 
@@ -54,6 +56,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         euro.setOnClickListener(this);
         won.setOnClickListener(this);
         config.setOnClickListener(this);
+
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -66,7 +69,26 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         };
 
         t = new Thread(this);
-        t.start();
+        Calendar calendar = Calendar.getInstance();
+        Log.i("日期",calendar.get(Calendar.YEAR)+"年"+calendar.get(Calendar.MONTH)+"月"+calendar.get(Calendar.DATE)+"日");
+
+
+        SharedPreferences sharedPreferencesDate = getSharedPreferences("myrate", Activity.MODE_PRIVATE);
+        final SharedPreferences.Editor editorDate = sharedPreferencesDate.edit();
+        dollar_rate=sharedPreferencesDate.getFloat("dollar_rate",(float) 0.14442050379784);
+        euro_rate = sharedPreferencesDate.getFloat("euro_rate", (float) 0.1258155457983);
+        won_rate = sharedPreferencesDate.getFloat("won_rate", (float) 164.10384926188);
+
+        if (sharedPreferencesDate.getInt("year",1970)==calendar.get(Calendar.YEAR)&&
+                sharedPreferencesDate.getInt("month",0)==calendar.get(Calendar.MONTH)&&
+                sharedPreferencesDate.getInt("day",1)==calendar.get(Calendar.DATE)){
+        }else {
+            t.start();
+            editorDate.putInt("year",calendar.get(Calendar.YEAR));
+            editorDate.putInt("month",calendar.get(Calendar.MONTH));
+            editorDate.putInt("day",calendar.get(Calendar.DATE));
+            editorDate.apply();
+        }
         Thread t1 = new Thread(this){
             @Override
             public void run() {
@@ -87,9 +109,10 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Bundle bundle = data.getExtras();
         if(requestCode==1&&resultCode==2){
-            dollar_rate=bundle.getDouble("dollar_rate",0.14442050379784);
-            euro_rate=bundle.getDouble("euro_rate",0.1258155457983);
-            won_rate=bundle.getDouble("won_rate",164.10384926188);
+            dollar_rate=bundle.getFloat("dollar_rate",(float)0.14442050379784);
+            euro_rate=bundle.getFloat("euro_rate",(float)0.1258155457983);
+            won_rate=bundle.getFloat("won_rate",(float)164.10384926188);
+            Log.i("save","手动更新完成！");
         }
     }
 
@@ -116,9 +139,9 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         }
         if (v.getId()==R.id.config){
             Bundle bundle = new Bundle();
-            bundle.putDouble("dollar_rate", dollar_rate);
-            bundle.putDouble("euro_rate", euro_rate);
-            bundle.putDouble("won_rate", won_rate);
+            bundle.putFloat("dollar_rate", dollar_rate);
+            bundle.putFloat("euro_rate", euro_rate);
+            bundle.putFloat("won_rate", won_rate);
             Intent intent = new Intent(this,config.class);
             intent.putExtras(bundle);
             startActivityForResult(intent,1);
@@ -127,22 +150,31 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void run() {
+        Log.i("spyder","爬虫启动");
+        SharedPreferences sharedPreferencesRate = getSharedPreferences("myrate", Activity.MODE_PRIVATE);
+        final SharedPreferences.Editor editorRate = sharedPreferencesRate.edit();
         URL url = null;
         try {
             url = new URL("https://huobiduihuan.51240.com/");
             HttpURLConnection http  = (HttpURLConnection) url.openConnection();
             InputStream in = http.getInputStream();
             String html = inputStream2String(in);
-            Log.i("tag","run:html"+html);
+//            Log.i("tag","run:html"+html);
             Message msg = handler.obtainMessage(5);
             Document doc = Jsoup.parse(html);
             Element elementDollar = doc.getElementsByAttributeValueContaining("title","United States Dollars - 美元").first();
             Element elementEuro = doc.getElementsByAttributeValueContaining("title","Euro - 欧元").first();
             Element elementWon = doc.getElementsByAttributeValueContaining("title","South Korea Won - 韩元").first();
 
-            dollar_rate=Double.parseDouble(elementDollar.text());
-            euro_rate = Double.parseDouble(elementEuro.text());
-            won_rate = Double.parseDouble(elementWon.text());
+            dollar_rate=Float.parseFloat(elementDollar.text());
+            euro_rate = Float.parseFloat(elementEuro.text());
+            won_rate = Float.parseFloat(elementWon.text());
+
+            editorRate.putFloat("dollar_rate",dollar_rate);
+            editorRate.putFloat("euro_rate",euro_rate);
+            editorRate.putFloat("won_rate",won_rate);
+
+            Log.i("spyder","爬虫完成");
 
 
 

@@ -28,22 +28,22 @@ public class config extends AppCompatActivity {
 
 
 
-        dollar_edit.setText(String.valueOf(bundle.getDouble("dollar_rate",0.14442050379784)));
-        euro_edit.setText(String.valueOf(bundle.getDouble("euro_rate",0.1258155457983)));
-        won_edit.setText(String.valueOf(bundle.getDouble("won_rate",164.10384926188)));
+        dollar_edit.setText(String.valueOf(bundle.getFloat("dollar_rate",0.144420f)));
+        euro_edit.setText(String.valueOf(bundle.getFloat("euro_rate",0.125815f)));
+        won_edit.setText(String.valueOf(bundle.getFloat("won_rate",164.103849f)));
 
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle2 = new Bundle();
-                bundle2.putDouble("dollar_rate", Double.parseDouble(String.format("%.6f",Double.parseDouble(dollar_edit.getText().toString()))));
-                bundle2.putDouble("euro_rate", Double.parseDouble(String.format("%.6f",Double.parseDouble(euro_edit.getText().toString()))));
-                bundle2.putDouble("won_rate",Double.parseDouble(String.format("%.6f",Double.parseDouble(won_edit.getText().toString()))));
+                bundle2.putFloat("dollar_rate", Float.parseFloat(dollar_edit.getText().toString()));
+                bundle2.putFloat("euro_rate", Float.parseFloat(euro_edit.getText().toString()));
+                bundle2.putFloat("won_rate",Float.parseFloat(won_edit.getText().toString()));
 
-                editor.putFloat("dollar_rate", (float) Double.parseDouble(String.format("%.6f",Double.parseDouble(dollar_edit.getText().toString()))));
-                editor.putFloat("euro_rate", (float) Double.parseDouble(String.format("%.6f",Double.parseDouble(euro_edit.getText().toString()))));
-                editor.putFloat("won_rate", (float) Double.parseDouble(String.format("%.6f",Double.parseDouble(won_edit.getText().toString()))));
+                editor.putFloat("dollar_rate", Float.parseFloat(dollar_edit.getText().toString()));
+                editor.putFloat("euro_rate", Float.parseFloat(euro_edit.getText().toString()));
+                editor.putFloat("won_rate", Float.parseFloat(won_edit.getText().toString()));
                 editor.apply();
                 intent.putExtras(bundle2);
                 setResult(2,intent);
