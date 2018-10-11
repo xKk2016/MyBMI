@@ -19,6 +19,8 @@ public class config extends AppCompatActivity {
         final EditText euro_edit = findViewById(R.id.euro_config);
         final EditText won_edit = findViewById(R.id.won_config);
         Button save = findViewById(R.id.save);
+        Button seeRate = findViewById(R.id.seeRate);
+
 
         final Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
@@ -48,6 +50,13 @@ public class config extends AppCompatActivity {
                 intent.putExtras(bundle2);
                 setResult(2,intent);
                 finish();
+            }
+        });
+        seeRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(config.this,RateListActivity2.class);
+                startActivity(intent1);
             }
         });
 
