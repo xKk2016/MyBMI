@@ -1,14 +1,17 @@
 package com.example.kk.mybmi;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,17 +27,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RateListActivity2 extends AppCompatActivity implements Runnable {
+public class RateListActivity2 extends AppCompatActivity implements Runnable,AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
+    private static final String TAG = "RateList2";
     Thread t;
     List<Rate> list1 = new ArrayList<>();
     ListAdapter adapter;
     Handler handler;
+    GridView rateList;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_list2);
-        ListView rateList = findViewById(R.id.RateList);
+        rateList = findViewById(R.id.RateList);
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -51,7 +57,9 @@ public class RateListActivity2 extends AppCompatActivity implements Runnable {
         t.start();
         adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,list1);
         rateList.setAdapter(adapter);
-
+        rateList.setEmptyView(findViewById(R.id.nodata));
+        rateList.setOnItemClickListener(this);
+        rateList.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -97,6 +105,31 @@ public class RateListActivity2 extends AppCompatActivity implements Runnable {
             out.append(buffer,0,rsz);
         }
         return out.toString();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i(TAG, "onItemClick: parent=" + parent);
+        Log.i(TAG, "onItemClick: view=" + view);
+        Log.i(TAG, "onItemClick: position=" + position);
+        Log.i(TAG, "onItemClick: id=" + id);
+        Rate r = (Rate)rateList.getItemAtPosition(position);
+        Log.i(TAG, "onItemClick: r=" + r);
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(this,SingleChange.class);
+
+        bundle.putString("type",r.type);
+        bundle.putFloat("rate",r.rate);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        rateList.removeViewAt(position);
+
+        return true;
     }
 
     class Rate{

@@ -9,9 +9,11 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,7 +33,7 @@ import java.net.URL;
 
 import java.util.Calendar;
 
-public class Main2Activity extends AppCompatActivity implements View.OnClickListener,Runnable{
+public class Main2Activity extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener,Runnable{
 
     private float dollar_rate;
     private float euro_rate;
@@ -199,5 +201,10 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             out.append(buffer,0,rsz);
         }
         return out.toString();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
     }
 }

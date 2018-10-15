@@ -15,4 +15,6 @@
     <string name="config">config</string>
     <string name="save">save</string>
     <string name="seeRate">查看汇率</string>
+    <string name="no_data">No Data</string>
+    <string name="input_rmb">Input RMB</string>
 </resources>

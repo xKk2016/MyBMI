@@ -29,7 +29,8 @@
         </activity>
         <activity android:name=".config" />
         <activity android:name=".RateListActivity" />
-        <activity android:name=".RateListActivity2"></activity>
+        <activity android:name=".RateListActivity2" />
+        <activity android:name=".SingleChange"></activity>
     </application>
 
 </manifest>

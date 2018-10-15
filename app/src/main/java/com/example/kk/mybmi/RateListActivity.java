@@ -2,6 +2,7 @@ package com.example.kk.mybmi;
 
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 
@@ -27,7 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RateListActivity extends ListActivity implements Runnable, AdapterView.OnItemClickListener{
+public class RateListActivity extends ListActivity implements Runnable, AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
+    private static final String TAG = "RateList";
     Handler handler;
     private ArrayList<HashMap<String,String>> listItems;
     private SimpleAdapter listItemAdapter;
@@ -41,6 +44,17 @@ public class RateListActivity extends ListActivity implements Runnable, AdapterV
         handler=new Handler(){
             @Override
             public void handleMessage(Message msg) {
+                if(msg.what == msgWhat){
+                    List<HashMap<String, String>> retList = (List<HashMap<String, String>>) msg.obj;
+                    SimpleAdapter adapter = new SimpleAdapter(RateListActivity.this,
+                            retList,
+                            R.layout.list_item, // ListItem的XML布局实现
+                            new String[] { "ItemTitle", "ItemDetail" },
+                            new int[] { R.id.itemTitle, R.id.itemDetail }
+                            );
+                    setListAdapter(adapter);
+                    Log.i("handler","reset list...");
+                }
                 super.handleMessage(msg);
             }
         };
@@ -49,9 +63,11 @@ public class RateListActivity extends ListActivity implements Runnable, AdapterV
 
 
         initListView();
-        this.setListAdapter(listItemAdapter);
+        setListAdapter(listItemAdapter);
+        getListView().setOnItemClickListener(this);
 
         Thread t = new Thread(this);
+        t.start();
     }
 
     private void initListView(){
@@ -63,8 +79,12 @@ public class RateListActivity extends ListActivity implements Runnable, AdapterV
             listItems.add(map);
         }
 
-        listItemAdapter = new SimpleAdapter(this,listItems,
-                R.layout.list_item,new String[]{"ItemTitle","ItemDetail"},new int[]{R.id.itemTitle,R.id.itemDetail});
+        listItemAdapter = new SimpleAdapter(this,
+                listItems,
+                R.layout.list_item,
+                new String[]{"ItemTitle","ItemDetail"},
+                new int[]{R.id.itemTitle,R.id.itemDetail}
+                );
     }
 
     @Override
@@ -128,5 +148,14 @@ public class RateListActivity extends ListActivity implements Runnable, AdapterV
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        Bundle bundle = new Bundle();
+//        Intent intent = new Intent();
+
+
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        return true;
     }
 }
