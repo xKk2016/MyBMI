@@ -1,9 +1,11 @@
 package com.example.kk.mybmi;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -126,9 +128,18 @@ public class RateListActivity2 extends AppCompatActivity implements Runnable,Ada
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        rateList.removeViewAt(position);
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示").setMessage("请确认是否删除当前数据").setPositiveButton("是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                rateList.removeViewAt(position);
+                rateList.deferNotifyDataSetChanged();
+            }
+        }).setNegativeButton("否",null);
+        builder.create().show();
+        Log.i(TAG, "onItemLongClick: size=" + list1.size());
         return true;
     }
 
